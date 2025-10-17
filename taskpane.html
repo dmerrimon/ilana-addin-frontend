@@ -1,0 +1,305 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible" content="IE=Edge"/><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ilana - Protocol Compliance Assistant</title><link rel="icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script><style>@font-face {
+            font-family: 'Miller Banner Light';
+            src: url('./assets/fonts/Miller Banner Light.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'Helvetica';
+            src: url('./assets/fonts/Helvetica.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }</style><style>* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            font-family: 'Helvetica', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            height: 100%;
+            background: #ffffff;
+            color: #333333;
+            overflow-x: hidden;
+        }
+        
+        #root {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Loading state styles - Minimalist design */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #151515;
+            color: #e4e2d8;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-logo {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+        
+        .loading-title {
+            font-family: 'Miller Banner Light', serif;
+            font-size: 2rem;
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+            color: #e4e2d8;
+        }
+        
+        .loading-subtitle {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 0.875rem;
+            opacity: 0.7;
+            margin-bottom: 3rem;
+            font-weight: normal;
+        }
+        
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 1px solid rgba(228, 226, 216, 0.2);
+            border-top: 1px solid #e4e2d8;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+        
+        .loading-status {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 0.75rem;
+            opacity: 0.6;
+            max-width: 280px;
+            line-height: 1.4;
+            font-weight: normal;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Error state styles - Minimalist design */
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #ffffff;
+            color: #333333;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .error-icon {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .error-title {
+            font-family: 'Miller Banner Light', serif;
+            font-size: 1.5rem;
+            font-weight: normal;
+            margin-bottom: 0.75rem;
+            color: #333333;
+        }
+        
+        .error-message {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 0.875rem;
+            opacity: 0.7;
+            max-width: 280px;
+            line-height: 1.4;
+            margin-bottom: 2rem;
+            font-weight: normal;
+        }
+        
+        .retry-button {
+            background: #151515;
+            color: #e4e2d8;
+            border: 1px solid #151515;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2px;
+            font-family: 'Helvetica', sans-serif;
+            font-size: 0.75rem;
+            font-weight: normal;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .retry-button:hover {
+            background: transparent;
+            color: #151515;
+        }
+        
+        /* Responsive design - Minimalist adjustments */
+        @media (max-width: 320px) {
+            .loading-container,
+            .error-container {
+                padding: 1.5rem;
+            }
+            
+            .loading-logo,
+            .error-icon {
+                font-size: 1.5rem;
+            }
+            
+            .loading-title {
+                font-size: 1.5rem;
+            }
+            
+            .error-title {
+                font-size: 1.25rem;
+            }
+            
+            .loading-subtitle,
+            .error-message {
+                font-size: 0.8rem;
+            }
+        }</style><script defer="defer" src="taskpane.js"></script></head><body><div id="root"><div id="loading-state" class="loading-container"><div class="loading-logo">🧬</div><h1 class="loading-title">Ilana</h1><p class="loading-subtitle">Protocol Compliance Assistant</p><div class="loading-spinner"></div><p class="loading-status">Initializing Word integration and connecting to analysis services...</p></div><div id="error-state" class="error-container" style="display: none;"><div class="error-icon">⚠️</div><h2 class="error-title">Connection Error</h2><p class="error-message">Unable to connect to Ilana services. Please check your internet connection and try again.</p><button class="retry-button" onclick="location.reload()">Retry Connection</button></div></div><script>// Global error handling
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            showErrorState();
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            showErrorState();
+        });
+        
+        // Office.js initialization
+        let isOfficeInitialized = false;
+        let initializationTimeout;
+        
+        function showErrorState() {
+            const loadingState = document.getElementById('loading-state');
+            const errorState = document.getElementById('error-state');
+            
+            if (loadingState) loadingState.style.display = 'none';
+            if (errorState) errorState.style.display = 'flex';
+        }
+        
+        function updateLoadingStatus(message) {
+            const statusElement = document.querySelector('.loading-status');
+            if (statusElement) {
+                statusElement.textContent = message;
+            }
+        }
+        
+        // Office.js initialization with timeout
+        Office.onReady((info) => {
+            clearTimeout(initializationTimeout);
+            
+            console.log('Office.js ready:', info);
+            updateLoadingStatus('Office.js initialized successfully...');
+            
+            if (info.host === Office.HostType.Word) {
+                console.log('Running in Microsoft Word');
+                isOfficeInitialized = true;
+                
+                // Wait for React app to load
+                updateLoadingStatus('Loading Ilana Protocol Assistant...');
+                
+                // Check if React app is ready (this will be handled by the React app)
+                setTimeout(() => {
+                    // If React hasn't hidden the loading state by now, there's likely an issue
+                    const loadingState = document.getElementById('loading-state');
+                    if (loadingState && loadingState.style.display !== 'none') {
+                        console.warn('React app may have failed to load');
+                        updateLoadingStatus('Loading taking longer than expected...');
+                    }
+                }, 5000);
+                
+            } else {
+                console.warn('Not running in Microsoft Word');
+                updateLoadingStatus('This add-in is designed for Microsoft Word');
+                
+                setTimeout(() => {
+                    showErrorState();
+                    const errorMessage = document.querySelector('.error-message');
+                    if (errorMessage) {
+                        errorMessage.textContent = 'This add-in is designed to work with Microsoft Word. Please open this add-in in Word.';
+                    }
+                }, 2000);
+            }
+        });
+        
+        // Timeout for Office.js initialization
+        initializationTimeout = setTimeout(() => {
+            console.error('Office.js initialization timeout');
+            showErrorState();
+            const errorMessage = document.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.textContent = 'Failed to initialize Office.js. Please ensure you are running this add-in in Microsoft Word.';
+            }
+        }, 10000); // 10 second timeout
+        
+        // Export initialization status for React app
+        window.ilanaOfficeStatus = {
+            isInitialized: () => isOfficeInitialized,
+            hideLoadingState: () => {
+                const loadingState = document.getElementById('loading-state');
+                if (loadingState) {
+                    loadingState.style.display = 'none';
+                }
+            },
+            showErrorState: showErrorState,
+            updateStatus: updateLoadingStatus
+        };
+        
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            console.log('Taskpane HTML loaded');
+            
+            // Monitor for React app mount
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                        const root = document.getElementById('root');
+                        if (root && root.children.length > 1) {
+                            // React app has likely mounted
+                            console.log('React app appears to be mounted');
+                            observer.disconnect();
+                        }
+                    }
+                });
+            });
+            
+            observer.observe(document.getElementById('root'), {
+                childList: true,
+                subtree: true
+            });
+        });
+        
+        // Accessibility improvements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add ARIA labels for screen readers
+            const loadingContainer = document.getElementById('loading-state');
+            if (loadingContainer) {
+                loadingContainer.setAttribute('aria-live', 'polite');
+                loadingContainer.setAttribute('aria-label', 'Ilana is loading');
+            }
+            
+            const errorContainer = document.getElementById('error-state');
+            if (errorContainer) {
+                errorContainer.setAttribute('aria-live', 'assertive');
+                errorContainer.setAttribute('aria-label', 'Error occurred');
+            }
+        });</script></body></html>

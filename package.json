@@ -1,0 +1,12 @@
+{
+  "name": "ilana-frontend",
+  "version": "1.0.0",
+  "description": "Ilana Office Add-in Frontend",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx serve -s . -p $PORT"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}
